@@ -1,0 +1,55 @@
+name: st-obras-v2
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: obras_v2_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      TZ: America/Guayaquil
+      PGTZ: America/Guayaquil
+    # Solo accesible desde la propia máquina (DBeaver por túnel o en el servidor); no se publica a la red
+    ports:
+      - "127.0.0.1:${DB_PORT:-5435}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro   # solo corre con la base vacía
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./api
+    container_name: obras_v2_api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      UPLOAD_DIR: /app/uploads
+    # La web llega a la API por la red interna de Docker; el puerto solo queda para pruebas locales
+    ports:
+      - "127.0.0.1:${API_PORT:-3000}:3000"
+    volumes:
+      - uploads:/app/uploads   # firmas y documentos adjuntos
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./web
+    container_name: obras_v2_web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8081}:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  uploads:

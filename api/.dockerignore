@@ -1,0 +1,15 @@
+node_modules
+dist
+coverage
+test
+_to_delete
+*.tsbuildinfo
+*.log
+.env
+.env.*
+requests.http
+thunder
+.git
+.vscode
+postman
+uploads
