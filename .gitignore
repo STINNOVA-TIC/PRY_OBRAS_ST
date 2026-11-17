@@ -6,3 +6,4 @@ uploads
 *.tsbuildinfo
 coverage
 .DS_Store
+backups/

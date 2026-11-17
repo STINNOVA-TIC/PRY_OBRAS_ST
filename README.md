@@ -63,21 +63,19 @@ La base se crea vacía con el usuario inicial **admin@stinnova.com / Cambiar123!
 adjuntos viven en los volúmenes `pgdata` y `uploads`, que no se borran al reconstruir.
 **Nunca uses `docker compose down -v`**: la `-v` borra la base y los archivos.
 
-**Respaldo diario** de la base y de los archivos subidos (firmas, PDF, fotos), con `scripts/respaldo.sh`:
+**Respaldos automáticos** con el contenedor `obras_v2_backup` (se levanta con `docker compose up -d`):
 
-```bash
-mkdir -p /home/docker-ubuntu/backups/obras
-sh scripts/respaldo.sh && cat /home/docker-ubuntu/backups/obras/respaldo.log   # prueba manual
-crontab -e   # y agrega (cambia la ruta si tu carpeta es otra):
-30 23 * * * cd /home/docker-ubuntu/PRY_OBRAS_ST/PRY_OBRAS_ST && sh scripts/respaldo.sh
-```
-
-Cada noche deja `bd_<fecha>.dump` (toda la base: obras, usuarios, avances, bodega, planillas, bitácora…) y
-`adjuntos_<fecha>.tgz` (todas las firmas, PDF y fotos) en `/home/docker-ubuntu/backups/obras`. **No borra ningún
-respaldo**: se conservan todos. El log anota el tamaño y el disco libre, con un AVISO bajo 15 %. Copia esa carpeta
-fuera del servidor con regularidad.
-**Restaurar** (reemplaza los datos actuales, pide confirmación): `sh scripts/restaurar.sh 2026-11-17_2330`
-(sin fecha, lista los respaldos disponibles).
+- Todas las noches (por defecto 23:30, `BACKUP_CRON` en `.env`) y cada vez que arranca, guarda `bd_<fecha>.dump`
+  (toda la base: obras, usuarios, avances, bodega, planillas, bitácora…) y `adjuntos_<fecha>.tgz` (todas las firmas,
+  PDF y fotos) en `BACKUP_DIR`. **No borra ningún respaldo**: se conservan todos.
+- En el servidor pon en `.env` `BACKUP_DIR=/home/docker-ubuntu/backups/obras`, **fuera** de la carpeta del proyecto,
+  para que no se pierda al volver a clonar.
+- `respaldo.log` anota cada respaldo con su tamaño y el disco libre; escribe ERROR si algo falla y AVISO bajo 15 % de
+  disco. Un respaldo fallido no deja archivos a medias ni toca los anteriores.
+- Respaldo inmediato: `sh scripts/respaldo.sh` · Ver el log: `docker exec obras_v2_backup tail /backups/respaldo.log`
+- **Restaurar** (pide escribir SI y antes respalda el estado actual): `sh scripts/restaurar.sh` lista los respaldos;
+  `sh scripts/restaurar.sh 2026-11-17_233000` restaura ese.
+- Copia la carpeta de respaldos fuera del servidor con regularidad.
 
 ## Desarrollo local (sin Docker para api/web)
 

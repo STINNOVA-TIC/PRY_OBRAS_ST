@@ -50,6 +50,28 @@ services:
     depends_on:
       - api
 
+  # Respaldo automático: base de datos + archivos subidos, todas las noches. No borra respaldos anteriores.
+  backup:
+    image: postgres:16-alpine
+    container_name: obras_v2_backup
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/scripts/entrypoint.sh"]
+    environment:
+      TZ: America/Guayaquil
+      PGHOST: db
+      PGUSER: ${DB_USER}
+      PGPASSWORD: ${DB_PASSWORD}
+      PGDATABASE: ${DB_NAME}
+      BACKUP_CRON: ${BACKUP_CRON:-30 23 * * *}
+      BACKUP_AL_INICIAR: ${BACKUP_AL_INICIAR:-true}
+    volumes:
+      - uploads:/uploads:ro                      # solo lectura: el respaldo nunca modifica los adjuntos
+      - ${BACKUP_DIR:-./backups}:/backups        # en el servidor, una carpeta FUERA del proyecto
+      - ./scripts/backup:/scripts:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   pgdata:
   uploads:
