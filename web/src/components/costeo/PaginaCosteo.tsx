@@ -309,17 +309,30 @@ const ModalIndirectos: React.FC<{ obraId: string; c: CosteoObra | null; onCerrar
     }
   };
   return (
-    <Modal abierto titulo="Indirectos de la obra" subtitulo={`Costo directo del contrato ${fmtUSD(c.totales.directoContrato)}`} onCerrar={onCerrar} ancho="xl"
+    <Modal abierto titulo="Indirectos de la obra" subtitulo={`Costo directo del contrato ${fmtUSD(c.totales.directoContrato)}`} onCerrar={onCerrar} ancho="3xl"
       pie={<><button className={btnSecundario} onClick={onCerrar}>Cancelar</button><button className={btnPrimario} onClick={guardar}>Guardar indirectos</button></>}>
       <div className="space-y-2">
+        <div className="flex gap-2 px-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+          <span className="min-w-0 flex-1">Descripción</span>
+          <span className="w-32 shrink-0">Tipo</span>
+          <span className="w-28 shrink-0 text-right">Valor</span>
+          <span className="w-8 shrink-0" />
+        </div>
         {items.map((i, k) => (
-          <div key={k} className="flex gap-2">
-            <input className={`${inputCls} flex-1`} maxLength={200} value={i.descripcion} onChange={(e) => setItems(items.map((x, j) => (j === k ? { ...x, descripcion: e.target.value } : x)))} />
-            <select className={`${inputCls} w-28`} value={i.tipo} onChange={(e) => setItems(items.map((x, j) => (j === k ? { ...x, tipo: e.target.value as 'PCT' | 'MONTO' } : x)))}>
-              <option value="MONTO">Monto $</option><option value="PCT">% directo</option>
-            </select>
-            <input className={`${inputCls} w-28 text-right`} inputMode="decimal" placeholder="0" value={i.valor} onChange={(e) => setItems(items.map((x, j) => (j === k ? { ...x, valor: e.target.value } : x)))} />
-            <button className="p-2 text-gray-400 hover:text-red-600" onClick={() => setItems(items.filter((_, j) => j !== k))} title="Quitar"><BsX /></button>
+          <div key={k} className="flex items-center gap-2">
+            <div className="min-w-0 flex-1">
+              <input className={inputCls} maxLength={200} placeholder="Ej. Movilización, garantías, administración" title={i.descripcion} aria-label="Descripción del indirecto"
+                value={i.descripcion} onChange={(e) => setItems(items.map((x, j) => (j === k ? { ...x, descripcion: e.target.value } : x)))} />
+            </div>
+            <div className="w-32 shrink-0">
+              <select className={inputCls} aria-label="Tipo de indirecto" value={i.tipo} onChange={(e) => setItems(items.map((x, j) => (j === k ? { ...x, tipo: e.target.value as 'PCT' | 'MONTO' } : x)))}>
+                <option value="MONTO">Monto $</option><option value="PCT">% directo</option>
+              </select>
+            </div>
+            <div className="w-28 shrink-0">
+              <input className={`${inputCls} text-right`} inputMode="decimal" placeholder="0" aria-label="Valor del indirecto" value={i.valor} onChange={(e) => setItems(items.map((x, j) => (j === k ? { ...x, valor: e.target.value } : x)))} />
+            </div>
+            <button className="w-8 shrink-0 p-2 text-gray-400 hover:text-red-600" onClick={() => setItems(items.filter((_, j) => j !== k))} title="Quitar"><BsX /></button>
           </div>
         ))}
         <button className="text-xs font-semibold text-gray-600 hover:text-gray-900" onClick={() => setItems([...items, { descripcion: '', tipo: 'MONTO', valor: '' }])}><BsPlusLg className="inline mr-1" />Agregar indirecto</button>

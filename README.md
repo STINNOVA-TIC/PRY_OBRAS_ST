@@ -63,13 +63,21 @@ La base se crea vacía con el usuario inicial **admin@stinnova.com / Cambiar123!
 adjuntos viven en los volúmenes `pgdata` y `uploads`, que no se borran al reconstruir.
 **Nunca uses `docker compose down -v`**: la `-v` borra la base y los archivos.
 
-**Respaldo diario** (cron de root, 23:30):
+**Respaldo diario** de la base y de los archivos subidos (firmas, PDF, fotos), con `scripts/respaldo.sh`:
 
 ```bash
-sudo mkdir -p /home/docker-ubuntu/backups/obras
-sudo crontab -e
-30 23 * * * docker exec obras_v2_db pg_dump -U obras -d obras_v2 -F c > /home/docker-ubuntu/backups/obras/obras_$(date +\%F).dump && docker run --rm -v st-obras-v2_uploads:/u -v /home/docker-ubuntu/backups/obras:/b alpine tar czf /b/uploads_$(date +\%F).tgz -C /u . && find /home/docker-ubuntu/backups/obras -mtime +15 -delete
+mkdir -p /home/docker-ubuntu/backups/obras
+sh scripts/respaldo.sh && cat /home/docker-ubuntu/backups/obras/respaldo.log   # prueba manual
+crontab -e   # y agrega (cambia la ruta si tu carpeta es otra):
+30 23 * * * cd /home/docker-ubuntu/PRY_OBRAS_ST/PRY_OBRAS_ST && sh scripts/respaldo.sh
 ```
+
+Cada noche deja `bd_<fecha>.dump` (toda la base: obras, usuarios, avances, bodega, planillas, bitácora…) y
+`adjuntos_<fecha>.tgz` (todas las firmas, PDF y fotos) en `/home/docker-ubuntu/backups/obras`. **No borra ningún
+respaldo**: se conservan todos. El log anota el tamaño y el disco libre, con un AVISO bajo 15 %. Copia esa carpeta
+fuera del servidor con regularidad.
+**Restaurar** (reemplaza los datos actuales, pide confirmación): `sh scripts/restaurar.sh 2026-11-17_2330`
+(sin fecha, lista los respaldos disponibles).
 
 ## Desarrollo local (sin Docker para api/web)
 
