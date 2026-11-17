@@ -5,6 +5,7 @@ import { ReportesModule } from './reportes/reportes.module.js';
 import { CosteoModule } from './costeo/costeo.module.js';
 import { AccesosModule } from './accesos/accesos.module.js';
 import { DashboardModule } from './dashboard/dashboard.module.js';
+import { RespaldosModule } from './respaldos/respaldos.module.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -68,6 +69,7 @@ import { UsuariosModule } from './usuarios/usuarios.module.js';
     CosteoModule,
     AccesosModule,
     DashboardModule,
+    RespaldosModule,
   ],
   controllers: [HealthController],
   providers: [

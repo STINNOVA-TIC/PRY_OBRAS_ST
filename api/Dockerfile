@@ -20,6 +20,9 @@ COPY --from=build --chown=node:node /app/package.json ./
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist ./dist
 
+# pg_dump para el respaldo manual (Administración → Respaldos)
+RUN apk add --no-cache postgresql16-client
+
 # Carpeta de adjuntos (firmas, PDFs); se monta como volumen
 RUN mkdir -p /app/uploads && chown node:node /app/uploads
 ENV UPLOAD_DIR=/app/uploads

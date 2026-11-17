@@ -812,3 +812,15 @@ export interface DatosDashboard {
   documentos: { vencidos: number; porVencer: number };
   ver: { planillas: boolean; bodega: boolean };
 }
+
+export interface ArchivoRespaldo { nombre: string; bytes: number }
+export interface ResumenRespaldos {
+  configurado: boolean;
+  horario: { cron: string; texto: string; zona: string };
+  estado: { enCurso: boolean; inicio?: string; usuario?: string; ultimo?: { fin: string; ok: boolean; mensaje: string; usuario: string } };
+  respaldos: { fecha: string; momento: string; bd?: ArchivoRespaldo; adjuntos?: ArchivoRespaldo }[];
+  total: number;
+  tamanoTotal: number;
+  log: string[];
+  disco: { libreBytes: number; totalBytes: number; librePct: number } | null;
+}

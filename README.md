@@ -72,7 +72,12 @@ adjuntos viven en los volúmenes `pgdata` y `uploads`, que no se borran al recon
   para que no se pierda al volver a clonar.
 - `respaldo.log` anota cada respaldo con su tamaño y el disco libre; escribe ERROR si algo falla y AVISO bajo 15 % de
   disco. Un respaldo fallido no deja archivos a medias ni toca los anteriores.
-- Respaldo inmediato: `sh scripts/respaldo.sh` · Ver el log: `docker exec obras_v2_backup tail /backups/respaldo.log`
+- **Desde el sistema**: *Administración → Respaldos* (administrador y propietario, permiso `respaldos.gestionar`) muestra
+  el horario automático, el último respaldo y el espacio en disco. **Crear en servidor** guarda un respaldo en `BACKUP_DIR`;
+  **Descargar directo** genera uno completo y lo baja al equipo como `respaldo_ST-OBRAS_<fecha>.tar` (sin guardarlo en el
+  servidor). Las descargas usan enlaces de un solo uso que vencen en 2 minutos. Para restaurar uno descargado: extrae el
+  .tar en `BACKUP_DIR` (`tar xf respaldo_ST-OBRAS_<fecha>.tar -C /home/docker-ubuntu/backups/obras`) y usa `restaurar.sh`.
+- Desde el servidor: `sh scripts/respaldo.sh` · Ver el log: `docker exec obras_v2_backup tail /backups/respaldo.log`
 - **Restaurar** (pide escribir SI y antes respalda el estado actual): `sh scripts/restaurar.sh` lista los respaldos;
   `sh scripts/restaurar.sh 2026-11-17_233000` restaura ese.
 - Copia la carpeta de respaldos fuera del servidor con regularidad.

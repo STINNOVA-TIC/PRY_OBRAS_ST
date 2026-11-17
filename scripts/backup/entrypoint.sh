@@ -3,6 +3,9 @@
 set -e
 HORARIO="${BACKUP_CRON:-30 23 * * *}"
 mkdir -p /backups
+# La API (usuario node, uid 1000) también escribe aquí cuando se pide un respaldo manual
+chown 1000:1000 /backups 2>/dev/null || true
+touch /backups/respaldo.log && chmod 666 /backups/respaldo.log
 echo "$HORARIO /bin/sh /scripts/respaldo.sh >> /backups/cron.log 2>&1" > /etc/crontabs/root
 echo "$(date '+%F %T') Contenedor de respaldo iniciado; horario: $HORARIO" >> /backups/respaldo.log
 # Espera a que la base responda y saca un respaldo al arrancar (desactivable con BACKUP_AL_INICIAR=false)

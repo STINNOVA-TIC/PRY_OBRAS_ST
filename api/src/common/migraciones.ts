@@ -128,6 +128,18 @@ export const MIGRACIONES: { id: string; sql: string }[] = [
       ALTER TABLE transferencia_items ADD COLUMN IF NOT EXISTS nota_recepcion TEXT;
       ALTER TABLE transferencia_items ADD COLUMN IF NOT EXISTS archivo_recepcion_id UUID REFERENCES archivos(id);`,
   },
+  {
+    id: '012_permiso_respaldos',
+    sql: `
+      INSERT INTO permisos (modulo_id, codigo, accion, descripcion)
+      SELECT m.id, 'respaldos.gestionar', 'GESTIONAR', 'Respaldos: ver el horario, sacar un respaldo manual y descargarlo'
+      FROM modulos m WHERE m.codigo = 'CONFIG'
+      ON CONFLICT (codigo) DO NOTHING;
+      INSERT INTO rol_permisos (rol_id, permiso_id)
+      SELECT r.id, p.id FROM roles r, permisos p
+      WHERE r.codigo IN ('SUPERADMIN', 'ADMINISTRADOR') AND p.codigo = 'respaldos.gestionar'
+      ON CONFLICT DO NOTHING;`,
+  },
 ];
 
 @Injectable()

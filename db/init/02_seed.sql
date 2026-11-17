@@ -68,7 +68,8 @@ FROM (VALUES
   (42,'ROLES','roles.editar','EDITAR','Editar roles y sus permisos'),
   (43,'ROLES','roles.desactivar','ELIMINAR','Activar y desactivar roles'),
   (44,'BITACORA','bitacora.ver','VER','Ver la bitácora completa'),
-  (45,'BODEGA','bodega.central','GESTIONAR','Operar la bodega central: ver su stock y kardex, ingresos y despachos')
+  (45,'BODEGA','bodega.central','GESTIONAR','Operar la bodega central: ver su stock y kardex, ingresos y despachos'),
+  (46,'CONFIG','respaldos.gestionar','GESTIONAR','Respaldos: ver el horario, sacar un respaldo manual y descargarlo')
 ) AS p(n, modulo, codigo, accion, descripcion)
 JOIN modulos m ON m.codigo = p.modulo
 ORDER BY p.n;
@@ -98,7 +99,7 @@ FROM (VALUES
      'contratistas.ver','contratistas.gestionar','rubros.editar','avances.registrar','avances.anular',
      'bodega.ver','bodega.ingresar','bodega.consumo','bodega.ajustar','bodega.transferir','bodega.firmar_transferencia',
      'bodega.central','planillas.ver','planillas.elaborar','planillas.firmar','planillas.estado','reportes.ver','reportes.exportar',
-     'usuarios.ver']),
+     'usuarios.ver','respaldos.gestionar']),
   ('SUPERINTENDENTE', ARRAY['obras.ver','obras.editar','habilitacion.cargar','habilitacion.firmar',
      'contratistas.ver','rubros.editar','avances.registrar','avances.anular',
      'bodega.ver','bodega.ingresar','bodega.consumo','bodega.transferir','bodega.firmar_transferencia',

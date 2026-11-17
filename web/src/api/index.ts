@@ -11,6 +11,7 @@ import type {
   Rol,
   Usuario,
   UsuarioSesion, Rubro, RubrosObra, RubroInput, PaginaAvances, ResultadoAvance, AvanceInput, Programa, ProgramaInput, Bodega, DesgloseMaterial,
+  ResumenRespaldos,
   StockBodega, Disponible, PaginaMovimientos, Movimiento, MovimientoInput, TransferenciaResumen, Transferencia, MaterialCat, RubroCat, DocumentoHab, FilaRubroExcel, FilaMaterialExcel, ResumenPlanillas, PropuestaPlanilla, Planilla, PlanillaInput, TipoPlanilla, FiltroBitacora, EventoBitacora, RegistroAuditoria, Parametro, Rendimiento, ReporteObra, ReporteGeneral, CosteoObra, AccesoExterno, CargaPublica, EstadoObra, DatosDashboard, ItemMovTransferencia } from '../types';
 
 export const authAPI = {
@@ -176,6 +177,21 @@ export async function descargar(url: string, nombre: string) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(href), 10_000);
 }
+
+export const respaldosAPI = {
+  resumen: () => api.get<ResumenRespaldos>('/respaldos').then((r) => r.data),
+  iniciar: () => api.post<ResumenRespaldos['estado']>('/respaldos').then((r) => r.data),
+  /** Descarga por enlace de un solo uso: el navegador la maneja directo (con su barra de progreso), sin cargarla en memoria. */
+  descargar: async (nombre?: string) => {
+    const { url } = await api.post<{ url: string }>('/respaldos/enlace', nombre ? { nombre } : {}).then((r) => r.data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  },
+};
 
 export const catalogoAPI = {
   materiales: () => api.get<MaterialCat[]>('/catalogo/materiales').then((r) => r.data),

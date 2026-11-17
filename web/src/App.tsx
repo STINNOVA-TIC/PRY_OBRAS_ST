@@ -21,6 +21,7 @@ import { PaginaCargaPublica } from './components/habilitacion/PaginaCargaPublica
 import { ImprimirReporteGeneral, PaginaReporteGeneral } from './components/reportes/ReporteGeneral';
 import { PaginaCosteo } from './components/costeo/PaginaCosteo';
 import { PaginaBitacora } from './components/bitacora/Bitacora';
+import { PaginaRespaldos } from './components/respaldos/PaginaRespaldos';
 import { MiPerfil } from './components/perfil/MiPerfil';
 
 const SinPermiso = (
@@ -55,6 +56,7 @@ function App() {
             <Route path="/reportes" element={<Pagina permisos={['reportes.ver']}><PaginaReporteGeneral /></Pagina>} />
             <Route path="/costeo" element={<Pagina permisos={['costeo.ver']}><PaginaCosteo /></Pagina>} />
             <Route path="/bitacora" element={<Pagina permisos={['bitacora.ver']}><PaginaBitacora /></Pagina>} />
+            <Route path="/admin/respaldos" element={<Pagina permisos={['respaldos.gestionar']}><PaginaRespaldos /></Pagina>} />
             <Route path="/catalogo" element={<Pagina permisos={['config.editar']}><PaginaCatalogo /></Pagina>} />
             <Route path="/contratistas" element={<Pagina permisos={['contratistas.ver']}><PanelContratistas /></Pagina>} />
             <Route path="/admin/usuarios" element={<Pagina permisos={['usuarios.ver', 'usuarios.crear']}><PanelUsuarios /></Pagina>} />

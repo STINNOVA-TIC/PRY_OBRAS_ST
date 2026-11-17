@@ -3,6 +3,7 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   BsBoxArrowRight,
+  BsDatabaseFillCheck,
   BsBoxes,
   BsBuildings,
   BsGrid1X2Fill,
@@ -52,6 +53,7 @@ export const Navbar: React.FC = () => {
     { to: '/admin/roles', label: 'Roles y permisos', icon: <BsShieldLock />, visible: hasAnyPermission('roles.ver'), admin: true },
     { to: '/catalogo', label: 'Catálogo y parámetros', icon: <BsGrid1X2Fill />, visible: esPropietario || hasAnyPermission('config.editar'), admin: true },
     { to: '/bitacora', label: 'Bitácora', icon: <BsClockHistory />, visible: hasAnyPermission('bitacora.ver'), admin: true },
+    { to: '/admin/respaldos', label: 'Respaldos', icon: <BsDatabaseFillCheck />, visible: hasAnyPermission('respaldos.gestionar'), admin: true },
   ];
   const visibles = items.filter((i) => i.visible && !i.proximamente);
   const principales = visibles.filter((i) => !i.admin);

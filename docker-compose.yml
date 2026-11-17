@@ -32,11 +32,14 @@ services:
       DB_HOST: db
       DB_PORT: 5432
       UPLOAD_DIR: /app/uploads
+      BACKUP_DIR: /backups                       # respaldo manual desde Administración → Respaldos
+      BACKUP_CRON: ${BACKUP_CRON:-30 23 * * *}
     # La web llega a la API por la red interna de Docker; el puerto solo queda para pruebas locales
     ports:
       - "127.0.0.1:${API_PORT:-3000}:3000"
     volumes:
       - uploads:/app/uploads   # firmas y documentos adjuntos
+      - ${BACKUP_DIR:-./backups}:/backups        # la misma carpeta que usa el contenedor de respaldo
     depends_on:
       db:
         condition: service_healthy
